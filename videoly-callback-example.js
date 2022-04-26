@@ -1,6 +1,10 @@
 // create callback to process videos
 function processVideosCallback(err, data) {
   // if smth goes wrong, we send you an error as a first argument
+
+  console.log('err', err);
+  console.log('data', data);
+
   if (err) {
     console.error(err);
     return;
@@ -41,13 +45,16 @@ function renderVideolyVideos(videos, startPlayer, closePlayer) {
     padding: ${paddings}px;
   `;
 
-  videos.forEach(video => {
-    const videoElement = createVideoElement(video);
+  // videos.forEach(video => {
+    
+  // });
 
+  for (let i = 0; i < 3; i += 1) {
+    const videoElement = createVideoElement(videos[i]);
     // add destroyable events
-    videoElement.addEventListener('click', () => startPlayer(video));
+    videoElement.addEventListener('click', () => startPlayer(videos[i]));
     videoTape.append(videoElement);
-  });
+  }
 
   // append some global styles for videos
   appendGlobalVideoStyles();
