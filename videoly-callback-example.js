@@ -15,8 +15,8 @@ function processVideosCallback(err, data) {
 // create function that will render videos as html/css
 function renderVideolyVideos(videos, startPlayer, closePlayer) {
   // get element that will be an anchor to our videos
-  // REPLACE '.social' with id/class/whatever of YUOR ANCHOR ELEMENT!
-  const anchor = document.querySelector('.social');
+  // TODO: REPLACE '.social' with id/class/whatever of YUOR ANCHOR ELEMENT!
+  const anchor = document.querySelector('.media');
 
   // calculate some dimensions
   const videoCount = videos.length;
