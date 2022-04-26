@@ -167,7 +167,7 @@ const conf = {
       "en": "YouTuben kautta julkaistavien videoiden tekniset tiedot voivat erota Gigantilla myytävästä tuotteesta. Tarkat tiedot löydät Gigantin verkkokaupasta."
     }
   },
-  "API_BASE": "/",
+  "API_BASE": "https://dapi.videoly.co/",
   "API_VERSION": "1",
   "API_PKG_VERSION": "1.43.34",
   "VIDEOS_URL": "/videos/0/99/",
