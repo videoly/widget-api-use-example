@@ -1,84 +1,70 @@
 // create callback to process videos
 function processVideosCallback(err, data) {
-  // if smth goes wrong, we send you an error as a first argument
-
-  console.log('err', err);
-  console.log('data', data);
-
   if (err) {
+    // Something went wrong, let's log it
     console.error(err);
     return;
   }
 
   // get videos and basic actions
   const { videos, actions: { startPlayer, closePlayer } } = data;
+
   // render videos and bind actions to video thumbnails
   renderVideolyVideos(videos, startPlayer, closePlayer);
 }
 
 // create function that will render videos as html/css
 function renderVideolyVideos(videos, startPlayer, closePlayer) {
-  // get element that will be an anchor to our videos
-  // TODO: REPLACE '.social' with id/class/whatever of YUOR ANCHOR ELEMENT!
-  const anchor = document.querySelector('.media');
+  // Customize this selector to put videos in the right place
+  const widgetPlacementSelector = '.product-videos';
 
-  // calculate some dimensions
-  const videoCount = videos.length;
-  const videoElemHeight = 67;
-  const videoElemWidth = 120;
-  const paddings = 4;
-  // max-width will be 120px * 3;
-  const width = videoCount > 3 ? (3 * videoElemWidth) : (videoCount * videoElemWidth);
-  const minHeight = videoElemHeight + paddings;
+  // get element that will be an anchor to our videos
+  const anchor = document.querySelector(widgetPlacementSelector);
 
   // wrap videos with some html/css
-  const videoTape = document.createElement('ul');
+  const videoListElement = document.createElement('div');
 
-  videoTape.style.cssText = `
-    position: relative;
-    width: 600px;
-    display: grid;
-    grid-gap: 5px;
-    grid-template-columns: repeat(3, ${videoElemWidth}px);
-    width: ${width}px;
-    min-height: ${minHeight}px;
-    padding: ${paddings}px;
+  videoListElement.style.cssText = `
+    display: flex;
+    gap: 5px;
   `;
 
-  // videos.forEach(video => {
-    
-  // });
+  // Customize this number to show only a certain amount of videos
+  const showOnlyVideosCount = 3;
 
-  for (let i = 0; i < 3; i += 1) {
-    const videoElement = createVideoElement(videos[i]);
-    // add destroyable events
-    videoElement.addEventListener('click', () => startPlayer(videos[i]));
-    videoTape.append(videoElement);
-  }
+  videos
+    .slice(0, showOnlyVideosCount)
+    .forEach(video => {
+      const videoElement = createVideoElement(video);
+      // add destroyable events
+      videoElement.addEventListener('click', () => startPlayer(video));
+      videoListElement.append(videoElement);
+    });
 
   // append some global styles for videos
   appendGlobalVideoStyles();
 
   // append videos to the page
-  anchor.append(videoTape);
+  anchor.append(videoListElement);
 }
 
 // some auxiliary function to wrap video with markup
 function createVideoElement(video) {
   const videoItem = document.createElement('div');
-  videoItem.classList.add('videoly_video_item');
 
   const videoItemTile = document.createElement('div');
-  videoItemTile.classList.add('videoly_video_item_tile');
+  videoItemTile.classList.add('videoly-video-tile');
+  videoItemTile.style.width = '120px'; // width of the thumbnail
+  videoItemTile.style.height = '67px'; // height of the thumbnail
 
   const videoCover = document.createElement('div');
-  videoCover.classList.add('videoly_video_cover');
+  videoCover.classList.add('videoly-video-cover');
   const playButton = document.createElement('div');
-  playButton.classList.add('videoly_video_play_button');
+  playButton.classList.add('videoly-video-play-button');
   const duration = document.createElement('div');
-  duration.classList.add('videoly_video_duration');
+  duration.classList.add('videoly-video-duration');
   const genre = document.createElement('div');
-  genre.classList.add('videoly_video_genre');
+  genre.classList.add('videoly-video-genre');
 
   videoItem.append(videoItemTile);
   videoItemTile.append(videoCover);
@@ -116,32 +102,13 @@ function createVideoElement(video) {
 // some global styles to style video elements
 function appendGlobalVideoStyles() {
   const css = `
-    .videoly_video_item {
+    .videoly-video-tile {
       position: relative;
-      width: 146px;
-      height: 68px;
-      background-repeat: no-repeat;
-    }
-
-    .videoly_video_item_tile {
-      position: relative;
-      display: block;
-      width: 120px;
-      height: 67px;
       border-radius: 2px;
-      background-color: white;
-      /* while bg picture is not loaded we need to hide what's behind (.btn-more) */
-      background-repeat: no-repeat;
       cursor: pointer;
-      background-position: 0 -12px;
-      background-clip: border-box;
     }
 
-    .videoly_video_item_tile:hover {
-      border-color: rgba(209, 210, 210, .98);
-    }
-
-    .videoly_video_cover {
+    .videoly-video-cover {
       display: inline-block;
       position: relative;
       width: 100%;
@@ -152,7 +119,7 @@ function appendGlobalVideoStyles() {
       transition: background-color .2s;
     }
 
-    .videoly_video_cover::before {
+    .videoly-video-cover::before {
       position: absolute;
       top: 0;
       display: block;
@@ -163,11 +130,11 @@ function appendGlobalVideoStyles() {
       z-index: 1;
     }
 
-    .videoly_video_item_tile:hover .videoly_video_cover::before {
+    .videoly-video-tile:hover .videoly-video-cover::before {
       background-color: rgba(48, 48, 48, .1);
     }
 
-    .videoly_video_play_button {
+    .videoly-video-play-button {
       position: absolute;
       top: 50%;
       left: 50%;
@@ -180,7 +147,7 @@ function appendGlobalVideoStyles() {
       height: 24px;
     }
 
-    .videoly_video_duration {
+    .videoly-video-duration {
       display: inline-block;
       position: absolute;
       bottom: 0;
@@ -194,23 +161,17 @@ function appendGlobalVideoStyles() {
       opacity: 0;
     }
 
-    .videoly_video_item_tile:hover .videoly_video_duration {
+    .videoly-video-tile:hover .videoly-video-duration {
       opacity: 1;
     }
   
   `;
   const style = document.createElement('style');
-
-  if (style.styleSheet) {
-    style.styleSheet.cssText = css;
-  } else {
-    style.appendChild(document.createTextNode(css));
-  }
-
+  style.appendChild(document.createTextNode(css));
   document.getElementsByTagName('head')[0].appendChild(style);
 }
 
-// Register callback(s) for Videoly Widget!
+// Register callback(s) for Videoly Widget
 window.videolyInitCallbacks = {
   onVideoDataLoaded: [processVideosCallback]
 };
